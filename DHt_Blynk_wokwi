@@ -1,0 +1,47 @@
+/* Basit Abdul*/
+
+//Diambil dari blynk cloud
+#define BLYNK_TEMPLATE_ID "TMPLWg6iNOjD"
+#define BLYNK_TEMPLATE_NAME "Monioring Suhu"
+#define BLYNK_AUTH_TOKEN "6KN_vyQt4w-XkCPG1E7Mj0GBQgUC7hvT"
+
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <BlynkSimpleEsp32.h>
+#include <DHT.h>
+#define DHTPIN 18
+#define DHTTYPE DHT22
+DHT dht (DHTPIN, DHTTYPE);
+
+char auth[] = "6KN_vyQt4w-XkCPG1E7Mj0GBQgUC7hvT"; //diisi token blynk
+char ssid[] = "Wokwi-GUEST";
+char pass[] = "";
+
+BlynkTimer timer;
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(115200);
+  Serial.println("Sistem Monitoring Suhu");
+  dht.begin();
+  Blynk.begin(auth, ssid, pass);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  float t = dht.readTemperature(); //menghitung suhu
+  float h = dht.readHumidity(); //menghitung kelembaban
+  delay(1000);
+
+  Blynk.virtualWrite(V0, t); //mengirim data ke blynk
+  Blynk.virtualWrite(V1, h);
+
+  //Menampilkan data di serial monitor
+  Serial.println("Suhu = ");;
+  Serial.print(t);
+  Serial.println("Kelembaban = ");;
+  Serial.print(h);
+
+  Blynk.run();
+  timer.run();
+}
